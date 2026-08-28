@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Dashboard — HiveBots{% endblock %}</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐝</text></svg>">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+  <div class="flash-stack">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, message in messages %}
+        <div class="flash {{ category }}"><span class="dot"></span>{{ message }}</div>
+      {% endfor %}
+    {% endwith %}
+  </div>
+
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a href="{{ url_for('index') }}" class="brand"><span class="brand-mark">🐝</span> HiveBots</a>
+
+      <a href="{{ url_for('dashboard') }}" class="side-link {{ 'active' if request.endpoint == 'dashboard' else '' }}">🏠 Dashboard</a>
+      <a href="{{ url_for('new_bot') }}" class="side-link {{ 'active' if request.endpoint == 'new_bot' else '' }}">➕ Add bot</a>
+      <a href="{{ url_for('docs') }}" class="side-link">📘 Documentation</a>
+
+      {% if bot %}
+      <div class="side-section-label">{{ bot.name }}</div>
+      <a href="{{ url_for('bot_commands', bot_id=bot.id) }}" class="side-link {{ 'active' if tab == 'commands' else '' }}">⌘ Commands</a>
+      <a href="{{ url_for('bot_logs', bot_id=bot.id) }}" class="side-link {{ 'active' if tab == 'logs' else '' }}">🐞 Error logs</a>
+      <a href="{{ url_for('bot_users', bot_id=bot.id) }}" class="side-link {{ 'active' if tab == 'users' else '' }}">👥 Users</a>
+      <a href="{{ url_for('bot_broadcast', bot_id=bot.id) }}" class="side-link {{ 'active' if tab == 'broadcast' else '' }}">📣 Broadcast</a>
+      <a href="{{ url_for('bot_settings', bot_id=bot.id) }}" class="side-link {{ 'active' if tab == 'settings' else '' }}">⚙️ Settings</a>
+      {% endif %}
+
+      <div class="sidebar-footer">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <div style="width:32px;height:32px;border-radius:9px;background:var(--surface-3);display:flex;align-items:center;justify-content:center;font-size:14px;">{{ current_user.name[0]|upper }}</div>
+          <div style="min-width:0;">
+            <div style="font-size:13.5px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ current_user.name }}</div>
+            <a href="{{ url_for('logout') }}" style="font-size:12px; color:var(--muted-2);">Log out</a>
+          </div>
+        </div>
+        <div class="points-meter">
+          <div class="label"><span>Points</span><span>{{ '{:,}'.format(current_user.points_remaining) }} / {{ '{:,}'.format(current_user.points_total) }}</span></div>
+          <div class="bar"><i style="width:{{ points_pct if points_pct is defined else (100*current_user.points_remaining/current_user.points_total)|round|int }}%"></i></div>
+        </div>
+      </div>
+    </aside>
+
+    <main class="app-main">
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  {% block extra_scripts %}{% endblock %}
+</body>
+</html>

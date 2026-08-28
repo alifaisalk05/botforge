@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+{% block content %}
+
+<header class="hero">
+  <div class="container hero-grid">
+    <div>
+      <div class="eyebrow"><span class="dot"></span> 80,000+ bots hosted for free, right now</div>
+      <h1>Build Telegram bots <span class="accent">without touching a server.</span></h1>
+      <p class="lead">HiveBots is a multi-user platform for creating, hosting, and scaling Telegram bots. Paste a token from BotFather, write commands in a friendly Python-flavored language, and your bot is live — no infrastructure, no DevOps, no bill.</p>
+      <div class="hero-ctas">
+        <a href="{{ url_for('register') }}" class="btn btn-primary">Start building free →</a>
+        <a href="{{ url_for('docs') }}" class="btn btn-ghost">Read the docs</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat"><b data-count="100000" data-suffix="">0</b><span>Free points / month</span></div>
+        <div class="stat"><b data-count="0" data-suffix="ms">0</b><span>Webhook latency target</span></div>
+        <div class="stat"><b data-count="0">0</b><span>Bots per account</span></div>
+      </div>
+    </div>
+
+    <div class="console-panel reveal in">
+      <div class="console-bar">
+        <span></span><span></span><span></span>
+        <span class="fname">commands / start.hivescript</span>
+      </div>
+      <div class="console-body">
+        <div class="console-line" style="animation-delay:.1s"><span class="cm"># runs when a user sends /start</span></div>
+        <div class="console-line" style="animation-delay:.3s">first_name <span class="kw">=</span> message.from_user.first_name</div>
+        <div class="console-line" style="animation-delay:.5s">User.<span class="fn">saveData</span>(<span class="str">"joined"</span>, <span class="kw">True</span>)</div>
+        <div class="console-line" style="animation-delay:.7s">bot.<span class="fn">sendMessage</span>(</div>
+        <div class="console-line" style="animation-delay:.9s">&nbsp;&nbsp;<span class="str">f"Hey {first_name}! Welcome 👋"</span></div>
+        <div class="console-line" style="animation-delay:1.1s">)</div>
+      </div>
+      <div class="chat-bubble-wrap">
+        <div class="chat-meta"><span class="live-dot"></span> delivered to Telegram in real time</div>
+        <div class="chat-bubble" style="animation-delay:1.3s">Hey Sara! Welcome 👋</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section id="features">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow-plain">Platform</span>
+      <h2>Everything a bot needs to grow up.</h2>
+      <p>One dashboard for every bot you own — commands, live logs, broadcast tools, and per-user data storage, all included on the free tier.</p>
+    </div>
+    <div class="grid-3">
+      <div class="card reveal reveal-delay-1">
+        <div class="icon-tile tile-violet">⌘</div>
+        <h3>Command-based scripting</h3>
+        <p>Every command — <code class="inline" style="background:transparent;color:var(--amber)">/start</code>, <code class="inline" style="background:transparent;color:var(--amber)">/help</code>, or a wildcard — runs its own HiveScript snippet, a restricted Python dialect you already half-know.</p>
+      </div>
+      <div class="card reveal reveal-delay-2">
+        <div class="icon-tile tile-amber">⚡</div>
+        <h3>Instant webhook delivery</h3>
+        <p>Press Start and HiveBots registers a Telegram webhook automatically. Messages reach your code the moment they're sent — no polling loops.</p>
+      </div>
+      <div class="card reveal reveal-delay-3">
+        <div class="icon-tile tile-mint">🗂</div>
+        <h3>Built-in user memory</h3>
+        <p><code class="inline" style="background:transparent;color:var(--amber)">User.saveData()</code> and <code class="inline" style="background:transparent;color:var(--amber)">User.getData()</code> give every bot persistent, per-user storage with zero setup.</p>
+      </div>
+      <div class="card reveal reveal-delay-1">
+        <div class="icon-tile tile-violet">📣</div>
+        <h3>One-click broadcasts</h3>
+        <p>Reach everyone who has ever messaged your bot with a single call — from code with <code class="inline" style="background:transparent;color:var(--amber)">Bot.broadcast()</code>, or from the dashboard.</p>
+      </div>
+      <div class="card reveal reveal-delay-2">
+        <div class="icon-tile tile-amber">🐞</div>
+        <h3>Live error logs</h3>
+        <p>Every execution is recorded. See exactly which command failed, when, and why — with the traceback, in plain language.</p>
+      </div>
+      <div class="card reveal reveal-delay-3">
+        <div class="icon-tile tile-mint">⏱</div>
+        <h3>Scheduled tasks</h3>
+        <p><code class="inline" style="background:transparent;color:var(--amber)">Bot.runCommandAfter()</code> lets any command reschedule itself or another command — reminders, drip campaigns, timeouts.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="how-it-works">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow-plain">Process</span>
+      <h2>Live in five steps.</h2>
+      <p>The whole path from idea to a running bot fits on one screen.</p>
+    </div>
+    <div class="steps">
+      <div class="step reveal reveal-delay-1"><div class="num">01</div><h4>Create an account</h4><p>Email and a password. No card required.</p></div>
+      <div class="step reveal reveal-delay-2"><div class="num">02</div><h4>Message @BotFather</h4><p>Run /newbot on Telegram and copy the API token.</p></div>
+      <div class="step reveal reveal-delay-3"><div class="num">03</div><h4>Paste the token</h4><p>Add your bot from the dashboard in seconds.</p></div>
+      <div class="step reveal reveal-delay-4"><div class="num">04</div><h4>Write commands</h4><p>Use the built-in editor and variable reference.</p></div>
+      <div class="step reveal reveal-delay-5"><div class="num">05</div><h4>Press Start</h4><p>Your bot goes live on Telegram immediately.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="scripting-preview">
+  <div class="container">
+    <div class="code-showcase">
+      <div class="reveal">
+        <span class="eyebrow-plain">HiveScript</span>
+        <h2 style="font-size:32px; margin-bottom:16px;">If you know Python, you already know this.</h2>
+        <p style="color:var(--muted); font-size:15.5px; margin-bottom:20px;">HiveScript is a deliberately small, sandboxed Python dialect. A handful of ready-made objects — <b style="color:var(--text)">bot</b>, <b style="color:var(--text)">message</b>, <b style="color:var(--text)">User</b>, <b style="color:var(--text)">params</b> — cover almost everything a bot needs to do, so there's no SDK to install and nothing to import.</p>
+        <a href="{{ url_for('docs') }}" class="btn btn-ghost">Browse the full reference</a>
+      </div>
+      <div class="code-block reveal reveal-delay-2">
+<span class="ln">1</span><span class="cm"># /refer command — a simple referral tracker</span>
+<span class="ln">2</span>referrer <span class="kw">=</span> params
+<span class="ln">3</span><span class="kw">if</span> referrer:
+<span class="ln">4</span>&nbsp;&nbsp;pts <span class="kw">=</span> User.<span class="fn">getData</span>(<span class="str">"points"</span>, <span class="var">0</span>)
+<span class="ln">5</span>&nbsp;&nbsp;User.<span class="fn">saveData</span>(<span class="str">"points"</span>, pts <span class="kw">+</span> <span class="var">10</span>)
+<span class="ln">6</span>&nbsp;&nbsp;bot.<span class="fn">sendMessage</span>(<span class="str">f"+10 points! Total: {pts+10}"</span>)
+<span class="ln">7</span><span class="kw">else</span>:
+<span class="ln">8</span>&nbsp;&nbsp;bot.<span class="fn">sendMessage</span>(<span class="str">"Welcome! Share your link to earn points."</span>)
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="cta-band reveal">
+      <h2>Your bot is one token away.</h2>
+      <p>Free forever for the first 100,000 executions a month. No credit card.</p>
+      <a href="{{ url_for('register') }}" class="btn btn-primary">Create your account</a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

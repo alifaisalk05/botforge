@@ -1,0 +1,93 @@
+{% extends "app_base.html" %}
+{% block title %}{{ 'New command' if mode == 'new' else 'Edit command' }} — {{ bot.name }}{% endblock %}
+{% block extra_head %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/dracula.min.css">
+{% endblock %}
+{% block content %}
+<div class="bot-header">
+  <div class="bot-avatar">{{ bot.avatar_emoji or '🤖' }}</div>
+  <div style="flex:1;">
+    <h1 style="font-size:22px;">{{ 'New command' if mode == 'new' else 'Edit ' + command.trigger_name }}</h1>
+    <p class="sub" style="margin-top:2px;">{{ bot.name }}</p>
+  </div>
+  <a href="{{ url_for('bot_commands', bot_id=bot.id) }}" class="btn btn-ghost btn-sm">← Back to commands</a>
+</div>
+
+<form method="post" novalidate>
+  <div class="editor-shell">
+    <div>
+      <div class="field" style="max-width:280px;">
+        <label for="trigger_name">Trigger</label>
+        <input id="trigger_name" name="trigger_name" type="text" value="{{ trigger_name }}" placeholder="/start" required>
+        <div class="hint">Use <code class="inline">/command</code> for exact matches, or <code class="inline">*</code> to catch any message with no matching command.</div>
+      </div>
+
+      <div class="field">
+        <label for="code-editor">HiveScript code</label>
+        <textarea id="code-editor" name="code" rows="18">{{ code }}</textarea>
+      </div>
+
+      {% if mode == 'edit' %}
+      <div class="field" style="display:flex; align-items:center; gap:10px;">
+        <input type="checkbox" id="is_active" name="is_active" {{ 'checked' if command.is_active }} style="width:auto;">
+        <label for="is_active" style="margin:0;">Command is active</label>
+      </div>
+      {% endif %}
+
+      <div style="display:flex; gap:12px;">
+        <button type="submit" class="btn btn-primary">{{ 'Create command' if mode == 'new' else 'Save changes' }}</button>
+        <a href="{{ url_for('bot_commands', bot_id=bot.id) }}" class="btn btn-ghost">Cancel</a>
+      </div>
+    </div>
+
+    <aside>
+      <div class="ref-card">
+        <h4>Messaging</h4>
+        <button type="button" class="ref-item" data-insert='bot.sendMessage("Hello!")'>bot.sendMessage(text)<span>Send a text reply</span></button>
+        <button type="button" class="ref-item" data-insert='bot.sendPhoto("https://example.com/img.jpg")'>bot.sendPhoto(url)<span>Send an image</span></button>
+        <button type="button" class="ref-item" data-insert='bot.sendMessage("Pick one:", buttons=[[("Yes","yes"), ("No","no")]])'>buttons=[[...]]<span>Inline keyboard</span></button>
+        <button type="button" class="ref-item" data-insert='bot.broadcast("Announcement!")'>bot.broadcast(text)<span>Message every user</span></button>
+      </div>
+      <div class="ref-card">
+        <h4>User memory</h4>
+        <button type="button" class="ref-item" data-insert='User.saveData("key", value)'>User.saveData(key, val)<span>Store per-user data</span></button>
+        <button type="button" class="ref-item" data-insert='User.getData("key", default=None)'>User.getData(key)<span>Read it back</span></button>
+      </div>
+      <div class="ref-card">
+        <h4>Flow control</h4>
+        <button type="button" class="ref-item" data-insert='bot.handleNextCommand("/save_name")'>handleNextCommand()<span>Route the next message</span></button>
+        <button type="button" class="ref-item" data-insert='bot.runCommandAfter(3600, "/reminder")'>runCommandAfter(s, cmd)<span>Schedule a follow-up</span></button>
+      </div>
+      <div class="ref-card">
+        <h4>Context variables</h4>
+        <span class="ref-item" style="cursor:default;">message.from_user.first_name<span>Sender's name</span></span>
+        <span class="ref-item" style="cursor:default;">params<span>Text after the command</span></span>
+        <span class="ref-item" style="cursor:default;">message.chat.id<span>Chat / user ID</span></span>
+      </div>
+    </aside>
+  </div>
+</form>
+{% endblock %}
+{% block extra_scripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closebrackets.min.js"></script>
+<script>
+// Re-run the CodeMirror bootstrap now that the library has loaded (main.js already ran once before this point).
+(function () {
+  const el = document.getElementById('code-editor');
+  if (!el || typeof CodeMirror === 'undefined' || el.dataset.cmInit) return;
+  el.dataset.cmInit = '1';
+  const cm = CodeMirror.fromTextArea(el, {
+    mode: 'python', theme: 'dracula', lineNumbers: true, indentUnit: 4, tabSize: 4,
+    matchBrackets: true, autoCloseBrackets: true, viewportMargin: Infinity,
+  });
+  cm.on('change', () => cm.save());
+  window.__cm = cm;
+  const form = el.closest('form');
+  if (form) form.addEventListener('submit', () => cm.save());
+})();
+</script>
+{% endblock %}

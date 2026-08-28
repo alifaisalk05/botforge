@@ -1,0 +1,39 @@
+{% extends "app_base.html" %}
+{% block title %}{{ bot.name }} · Logs — HiveBots{% endblock %}
+{% block content %}
+<div class="bot-header">
+  <div class="bot-avatar">{{ bot.avatar_emoji or '🤖' }}</div>
+  <div style="flex:1;"><h1 style="font-size:22px;">{{ bot.name }}</h1><p class="sub" style="margin-top:2px;">{{ '@' + bot.username if bot.username else '' }}</p></div>
+</div>
+<div class="tab-bar">
+  <a href="{{ url_for('bot_commands', bot_id=bot.id) }}" class="tab-item">Commands</a>
+  <a href="{{ url_for('bot_logs', bot_id=bot.id) }}" class="tab-item active">Error logs</a>
+  <a href="{{ url_for('bot_users', bot_id=bot.id) }}" class="tab-item">Users</a>
+  <a href="{{ url_for('bot_broadcast', bot_id=bot.id) }}" class="tab-item">Broadcast</a>
+  <a href="{{ url_for('bot_settings', bot_id=bot.id) }}" class="tab-item">Settings</a>
+</div>
+
+{% if logs %}
+<div class="card" style="padding:0; overflow:hidden;">
+  <table class="log-table">
+    <thead><tr><th>Time</th><th>Level</th><th>Trigger</th><th>Message</th></tr></thead>
+    <tbody>
+      {% for log in logs %}
+      <tr>
+        <td style="white-space:nowrap; color:var(--muted);">{{ log.created_at|int|timestamp_fmt }}</td>
+        <td><span class="badge {{ log.level }}">{{ log.level }}</span></td>
+        <td><span class="mono" style="color:var(--amber);">{{ log.trigger_name or '—' }}</span></td>
+        <td style="max-width:480px;">{{ log.message }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<div class="empty-state">
+  <div class="glyph">🐞</div>
+  <h3>No activity yet</h3>
+  <p>Once your bot starts running commands, execution logs and errors show up here.</p>
+</div>
+{% endif %}
+{% endblock %}

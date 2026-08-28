@@ -1,0 +1,56 @@
+{% extends "app_base.html" %}
+{% block title %}Dashboard — HiveBots{% endblock %}
+{% block content %}
+<div class="app-topbar">
+  <div>
+    <h1>Welcome back, {{ current_user.name.split(' ')[0] }}</h1>
+    <p class="sub">{{ bots|length }} bot{{ '' if bots|length == 1 else 's' }} · {{ total_commands }} commands · {{ total_users }} people reached</p>
+  </div>
+  <a href="{{ url_for('new_bot') }}" class="btn btn-primary">➕ Add new bot</a>
+</div>
+
+<div class="stat-row">
+  <div class="stat-card"><div class="k">Bots</div><div class="v">{{ bots|length }}</div></div>
+  <div class="stat-card"><div class="k">Commands</div><div class="v">{{ total_commands }}</div></div>
+  <div class="stat-card"><div class="k">Users reached</div><div class="v">{{ total_users }}</div></div>
+  <div class="stat-card"><div class="k">Points left</div><div class="v">{{ '{:,}'.format(current_user.points_remaining) }}</div></div>
+</div>
+
+{% if bots %}
+<div class="bot-grid">
+  {% for bot in bots %}
+  <div class="bot-card">
+    <div class="bot-card-head">
+      <div class="bot-avatar">{{ bot.avatar_emoji or '🤖' }}</div>
+      <div style="flex:1; min-width:0;">
+        <div class="name">{{ bot.name }}</div>
+        <div class="uname">{{ '@' + bot.username if bot.username else 'unverified token' }}</div>
+      </div>
+      {% if bot.is_active %}
+        <span class="status-pill live"><span class="d"></span>Live</span>
+      {% else %}
+        <span class="status-pill off"><span class="d"></span>Stopped</span>
+      {% endif %}
+    </div>
+    <div class="bot-card-meta">
+      <span><b>{{ bot.command_count }}</b> commands</span>
+      <span><b>{{ bot.user_count }}</b> users</span>
+    </div>
+    <div class="bot-card-actions">
+      <a href="{{ url_for('bot_commands', bot_id=bot.id) }}" class="btn btn-ghost btn-sm" style="flex:1;">Open</a>
+      <form method="post" action="{{ url_for('toggle_bot', bot_id=bot.id) }}" style="flex:1;">
+        <button class="btn btn-sm btn-block {{ 'btn-danger' if bot.is_active else 'btn-primary' }}" type="submit">{{ 'Stop' if bot.is_active else 'Start' }}</button>
+      </form>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">
+  <div class="glyph">🐝</div>
+  <h3>No bots yet</h3>
+  <p>Get a token from @BotFather on Telegram, then connect your first bot.</p>
+  <a href="{{ url_for('new_bot') }}" class="btn btn-primary">Add your first bot</a>
+</div>
+{% endif %}
+{% endblock %}

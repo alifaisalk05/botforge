@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Create your account — HiveBots{% endblock %}
+{% block content %}
+<div class="auth-shell">
+  <div class="auth-side">
+    <a href="{{ url_for('index') }}" class="brand" style="margin-bottom:56px;"><span class="brand-mark">🐝</span> HiveBots</a>
+    <div class="quote-block">
+      <div class="qmark">“</div>
+      <p>I had a working referral bot with persistent points and a broadcast tool in one afternoon — no server to babysit.</p>
+      <div class="who">— an actual HiveBots builder, probably you soon</div>
+    </div>
+  </div>
+  <div class="auth-form-col">
+    <div class="auth-card">
+      <h1>Create your account</h1>
+      <p>Free forever. 100,000 execution points every month.</p>
+      <form method="post" novalidate>
+        <div class="field">
+          <label for="name">Name</label>
+          <input id="name" name="name" type="text" value="{{ name or '' }}" placeholder="Ada Lovelace" required autofocus>
+        </div>
+        <div class="field">
+          <label for="email">Email address</label>
+          <input id="email" name="email" type="email" value="{{ email or '' }}" placeholder="you@example.com" required>
+        </div>
+        <div class="field">
+          <label for="password">Password</label>
+          <input id="password" name="password" type="password" placeholder="At least 6 characters" required>
+          <div class="hint">Choose something you don't use anywhere else.</div>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Create account →</button>
+      </form>
+      <div class="form-footer-link">Already have an account? <a href="{{ url_for('login') }}">Log in</a></div>
+    </div>
+  </div>
+</div>
+{% endblock %}

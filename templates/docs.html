@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% block title %}Documentation — HiveBots{% endblock %}
+{% block content %}
+<section style="padding-top:56px;">
+  <div class="container docs-shell">
+    <nav class="docs-nav">
+      <a href="#getting-started">Getting started</a>
+      <a href="#scripting">Scripting reference</a>
+      <a href="#variables">Context variables</a>
+      <a href="#flow">Flow control</a>
+      <a href="#webhooks">Webhooks</a>
+      <a href="#points">Points &amp; limits</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+
+    <div class="docs-content">
+      <h2 id="getting-started">Getting started</h2>
+      <p>HiveBots hosts Telegram bots for you. You write small scripts called <b style="color:var(--text)">commands</b>; HiveBots handles the server, the webhook, and the uptime.</p>
+      <ol style="color:var(--muted); font-size:15px; padding-left:20px;">
+        <li style="margin-bottom:8px;">Create a free account.</li>
+        <li style="margin-bottom:8px;">Open Telegram, message <code class="inline">@BotFather</code>, and send <code class="inline">/newbot</code>.</li>
+        <li style="margin-bottom:8px;">Copy the API token BotFather gives you.</li>
+        <li style="margin-bottom:8px;">On your HiveBots dashboard, click <b style="color:var(--text)">Add new bot</b> and paste the token.</li>
+        <li style="margin-bottom:8px;">Edit the auto-created <code class="inline">/start</code> command, then press <b style="color:var(--text)">Start bot</b>.</li>
+      </ol>
+
+      <h2 id="scripting">Scripting reference (HiveScript)</h2>
+      <p>HiveScript is a restricted Python dialect. If you can write basic Python, you can write HiveScript. Each command's code runs inside its own sandbox with a fixed set of safe built-ins (<code class="inline">len</code>, <code class="inline">str</code>, <code class="inline">range</code>, <code class="inline">json</code>, <code class="inline">math</code>, <code class="inline">random</code>, <code class="inline">re</code>, and similar) — file access, network access, and imports outside that list are not available.</p>
+      <pre><code># /start
+first_name = message.from_user.first_name
+bot.sendMessage(f"Hey {first_name}! Welcome 👋\n\nUse /help to see what I can do.")
+
+# /help
+bot.sendMessage("""Available commands:
+/start - Welcome message
+/help - This menu""")</code></pre>
+
+      <h3>Sending messages</h3>
+      <ul>
+        <li><code class="inline">bot.sendMessage(text, buttons=None, parse_mode="HTML")</code> — send text, optionally with inline buttons.</li>
+        <li><code class="inline">bot.sendPhoto(url, caption=None, buttons=None)</code> — send an image by URL.</li>
+        <li><code class="inline">bot.sendDocument(url, caption=None)</code> — send a file by URL.</li>
+        <li><code class="inline">bot.sendChatAction("typing")</code> — show a "typing…" indicator.</li>
+      </ul>
+      <pre><code>bot.sendMessage(
+    "Choose an option:",
+    buttons=[[("Pricing", "show_pricing"), ("Support", "show_support")]]
+)</code></pre>
+
+      <h3>Buttons</h3>
+      <p><code class="inline">buttons</code> is a list of rows; each row is a list of <code class="inline">(label, target)</code> pairs. If <code class="inline">target</code> starts with <code class="inline">http</code>, it opens a link — otherwise it's sent back to your bot as a callback you can route to a command.</p>
+
+      <h2 id="variables">Context variables</h2>
+      <p>Every command automatically has access to these, with no setup:</p>
+      <div class="grid-2" style="margin: 20px 0;">
+        <div class="card" style="padding:20px;">
+          <h3 style="font-size:15px;">bot / Bot</h3>
+          <p style="font-size:13.5px;">Send messages, broadcast, and schedule follow-ups for the current chat.</p>
+        </div>
+        <div class="card" style="padding:20px;">
+          <h3 style="font-size:15px;">message / msg</h3>
+          <p style="font-size:13.5px;"><code class="inline">.text</code>, <code class="inline">.chat.id</code>, and <code class="inline">.from_user.first_name / .username / .id</code>.</p>
+        </div>
+        <div class="card" style="padding:20px;">
+          <h3 style="font-size:15px;">params</h3>
+          <p style="font-size:13.5px;">Everything typed after the command. <code class="inline">/refer 882</code> → <code class="inline">params == "882"</code>.</p>
+        </div>
+        <div class="card" style="padding:20px;">
+          <h3 style="font-size:15px;">User</h3>
+          <p style="font-size:13.5px;"><code class="inline">.saveData(key, value)</code> / <code class="inline">.getData(key, default)</code> — persistent storage per Telegram user, scoped to this bot.</p>
+        </div>
+        <div class="card" style="padding:20px;">
+          <h3 style="font-size:15px;">Account</h3>
+          <p style="font-size:13.5px;">Read-only info about the bot itself: <code class="inline">.bot_name</code>, <code class="inline">.bot_username</code>, <code class="inline">.owner_email</code>.</p>
+        </div>
+        <div class="card" style="padding:20px;">
+          <h3 style="font-size:15px;">options</h3>
+          <p style="font-size:13.5px;">A scratch dictionary available for advanced use within a single execution.</p>
+        </div>
+      </div>
+
+      <h2 id="flow">Flow control</h2>
+      <h3>Waiting for the next message</h3>
+      <p><code class="inline">bot.handleNextCommand(trigger)</code> tells HiveBots to route the user's <i>very next</i> message — whatever it says — to a specific command, instead of matching it normally. Perfect for "what's your name?" style prompts.</p>
+      <pre><code># /ask_name
+bot.sendMessage("What should I call you?")
+bot.handleNextCommand("/save_name")
+
+# /save_name
+name = params  # the user's reply lands here
+User.saveData("name", name)
+bot.sendMessage(f"Nice to meet you, {name}!")</code></pre>
+
+      <h3>Wildcard commands</h3>
+      <p>A command with the trigger <code class="inline">*</code> catches any message that doesn't match a real command — handy for fallback replies or free-text menus.</p>
+
+      <h3>Scheduling</h3>
+      <p><code class="inline">bot.runCommandAfter(seconds, trigger)</code> re-invokes a command after a delay, for the current user by default.</p>
+      <pre><code>bot.sendMessage("I'll remind you in 1 hour.")
+bot.runCommandAfter(3600, "/reminder")</code></pre>
+
+      <h3>Broadcasting</h3>
+      <p><code class="inline">bot.broadcast(text, buttons=None)</code> messages every user who has ever written to your bot. You can also trigger a broadcast without code from the <b style="color:var(--text)">Broadcast</b> tab on any bot.</p>
+
+      <h2 id="webhooks">How hosting works</h2>
+      <p>When you press <b style="color:var(--text)">Start bot</b>, HiveBots registers a webhook with Telegram pointing at your deployment's <code class="inline">/webhook/&lt;bot_id&gt;/&lt;secret&gt;</code> endpoint. From then on, Telegram pushes updates to that URL the moment they happen — no polling loop running in the background. Stopping a bot removes the webhook.</p>
+      <p>Because this is a self-hosted Flask app, your webhook URL is only reachable if your deployment has a public HTTPS address. Local development needs a tunnel (e.g. ngrok) for Telegram to reach it.</p>
+
+      <h2 id="points">Points &amp; limits</h2>
+      <p>Every account gets <b style="color:var(--text)">100,000 free execution points</b> each calendar month. Each command run costs 1 point. There's no limit on the number of bots or commands you can create — only on total executions per month. The deployment owner can adjust this cap directly in the database.</p>
+
+      <h2 id="faq">FAQ</h2>
+      <h3>My bot isn't responding</h3>
+      <p>Check the <b style="color:var(--text)">Error logs</b> tab first — most issues are a syntax error or an exception in your command code. Also confirm the bot shows as <b style="color:var(--text)">Live</b> on Settings.</p>
+      <h3>Can I use one token for two bots?</h3>
+      <p>No — Telegram allows one webhook per token. Cloning a bot copies its commands but you'll need to attach a fresh token before starting the clone.</p>
+      <h3>Is my code really sandboxed?</h3>
+      <p>Commands run with a restricted set of built-ins and no filesystem or arbitrary network access. This is meant to stop accidental damage, not to be a hard security boundary — don't run untrusted third-party commands on a production deployment without additional isolation (e.g. a subprocess sandbox or containers).</p>
+    </div>
+  </div>
+</section>
+{% endblock %}

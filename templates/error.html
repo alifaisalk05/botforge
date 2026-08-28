@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}{{ code }} — HiveBots{% endblock %}
+{% block content %}
+<section style="padding-top:120px; text-align:center;">
+  <div class="container">
+    <div style="font-family:'Sora'; font-size:96px; font-weight:800; background:linear-gradient(120deg,var(--violet),var(--amber)); -webkit-background-clip:text; background-clip:text; color:transparent;">{{ code }}</div>
+    <h2 style="margin-bottom:16px;">{{ message }}</h2>
+    <a href="{{ url_for('index') }}" class="btn btn-primary">Back to safety</a>
+  </div>
+</section>
+{% endblock %}

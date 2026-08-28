@@ -1,0 +1,31 @@
+{% extends "app_base.html" %}
+{% block title %}Add a bot — HiveBots{% endblock %}
+{% block content %}
+<div class="app-topbar">
+  <div>
+    <h1>Add a new bot</h1>
+    <p class="sub">Grab a token from @BotFather on Telegram, then connect it here.</p>
+  </div>
+</div>
+
+<div style="max-width:520px;">
+  <div class="settings-block">
+    <form method="post" novalidate>
+      <div class="field">
+        <label for="name">Bot name (just for your dashboard)</label>
+        <input id="name" name="name" type="text" value="{{ name or '' }}" placeholder="Support Assistant" required autofocus>
+      </div>
+      <div class="field">
+        <label for="token">Telegram API token</label>
+        <input id="token" name="token" type="text" value="{{ token or '' }}" placeholder="123456789:AAExampleTokenFromBotFather" required style="font-family:'JetBrains Mono'; font-size:13px;">
+        <div class="hint">Message <b style="color:var(--text)">@BotFather</b> → <code class="inline">/newbot</code> → copy the token it gives you.</div>
+      </div>
+      <button type="submit" class="btn btn-primary btn-block">Verify &amp; connect →</button>
+    </form>
+  </div>
+  <div class="card" style="padding:20px;">
+    <h3 style="font-size:14.5px; margin-bottom:10px;">Don't have a bot yet?</h3>
+    <p style="font-size:13.5px;">Open Telegram, search for <b style="color:var(--text)">@BotFather</b>, send <code class="inline">/newbot</code>, and follow the prompts. It takes about 60 seconds and it's free.</p>
+  </div>
+</div>
+{% endblock %}

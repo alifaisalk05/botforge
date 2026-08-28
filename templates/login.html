@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Log in — HiveBots{% endblock %}
+{% block content %}
+<div class="auth-shell">
+  <div class="auth-side">
+    <a href="{{ url_for('index') }}" class="brand" style="margin-bottom:56px;"><span class="brand-mark">🐝</span> HiveBots</a>
+    <div class="quote-block">
+      <div class="qmark">“</div>
+      <p>Every bot you own, one dashboard, zero servers to think about.</p>
+      <div class="who">— the whole point of HiveBots</div>
+    </div>
+  </div>
+  <div class="auth-form-col">
+    <div class="auth-card">
+      <h1>Welcome back</h1>
+      <p>Log in to manage your bots.</p>
+      <form method="post" novalidate>
+        <div class="field">
+          <label for="email">Email address</label>
+          <input id="email" name="email" type="email" value="{{ email or '' }}" placeholder="you@example.com" required autofocus>
+        </div>
+        <div class="field">
+          <label for="password">Password</label>
+          <input id="password" name="password" type="password" placeholder="••••••••" required>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Log in →</button>
+      </form>
+      <div class="form-footer-link">New here? <a href="{{ url_for('register') }}">Create a free account</a></div>
+    </div>
+  </div>
+</div>
+{% endblock %}

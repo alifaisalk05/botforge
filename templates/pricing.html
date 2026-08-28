@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Pricing — HiveBots{% endblock %}
+{% block content %}
+<section style="padding-top:64px;">
+  <div class="container">
+    <div class="section-head reveal" style="margin: 0 auto 52px; text-align:center; max-width:600px;">
+      <span class="eyebrow-plain">Pricing</span>
+      <h2>Free, on purpose.</h2>
+      <p>HiveBots runs on a simple points system instead of subscription tiers. Every account gets the same generous allowance.</p>
+    </div>
+    <div class="grid-2" style="max-width:820px; margin: 0 auto;">
+      <div class="card reveal">
+        <div class="icon-tile tile-mint">✓</div>
+        <h3>Free plan — everyone</h3>
+        <p>100,000 execution points every month, refreshed automatically. Each command run costs 1 point. Unlimited bots, unlimited commands, every feature included: broadcasts, webhooks, scheduled tasks, and persistent user data.</p>
+      </div>
+      <div class="card reveal reveal-delay-1">
+        <div class="icon-tile tile-violet">↑</div>
+        <h3>Need more points?</h3>
+        <p>This is a self-hosted, open codebase — the owner of the deployment can raise or remove the monthly point cap directly in the database, or wire up a payment provider for paid tiers.</p>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
